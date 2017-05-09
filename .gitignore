@@ -3,6 +3,6 @@ bin/
 .classpath
 .project
 
-*.properties
+sensitive_data.properties
 external/
 *Test.java

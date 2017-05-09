@@ -13,6 +13,10 @@ public class FareCalculator {
 	/** Fare rate when waiting for hour. */
 	private double waitFare;
 	
+	private double distance;
+	private double duration;
+	private double waittime;
+	
 	/**
 	 * Initialize FareCalculator with default argument.
 	 * Start Fare = 35
@@ -28,6 +32,9 @@ public class FareCalculator {
 		setStartFare(startFare);
 		setRunFare(runFare);
 		setWaitFare(waitFare);
+		distance = 0;
+		duration = 0;
+		waittime = 0;
 	}
 	
 	/**

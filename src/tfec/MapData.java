@@ -69,10 +69,10 @@ public class MapData {
 	 * Get ResourceBundle from config.properties
 	 * @return ResourceBundle of config.properties
 	 */
-	private ResourceBundle readProperties() {
+	private ResourceBundle readAPIProperties() {
 		FileInputStream file;
 		try {
-			file = new FileInputStream("src/config.properties");
+			file = new FileInputStream("src/sensitive_data.properties");
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException( e.getMessage() );
 		}
@@ -90,7 +90,7 @@ public class MapData {
 	 * @return api key
 	 */
 	private String readAPIKey() {
-		return readProperties().getString("api");
+		return readAPIProperties().getString("api");
 	}
 	
 	/**
@@ -100,8 +100,10 @@ public class MapData {
 	 * @return API request to Google Map Direction
 	 */
 	public String getDirectionRequest(String origin, String destination) {
-		String link = "https://maps.googleapis.com/maps/api/directions/json?origin="+formalize(origin)+"&destination="+formalize(destination)+"&language=en&region=th&key=" + readAPIKey();
-		if( link.length() > 8192 ) link = "null";
+		String link = "https://maps.googleapis.com/maps/api/directions/json?origin="
+						+ formalize(origin) + "&destination=" + formalize(destination)
+						+ "&language=en&region=th&key=" + readAPIKey();
+		if( link.length() > 8192 ) link = null;
 		return link;
 	}
 	
