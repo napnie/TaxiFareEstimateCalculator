@@ -10,7 +10,8 @@ public class Main {
 	
 	/** Run TFEC program. */
 	public static void main(String[] arg) {
-		FareCalculatorUI ui = new FareCalculatorUI();
+		FareCalculator estimator = new FareCalculator();
+		FareCalculatorUI ui = new FareCalculatorUI(estimator);
 		ui.run();
 	}
 

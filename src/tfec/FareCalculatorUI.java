@@ -18,6 +18,8 @@ import javax.swing.JTextField;
  */
 @SuppressWarnings("serial")
 public class FareCalculatorUI extends JFrame {
+	private FareCalculator estimator;
+	
 	/** Input for origin. */
 	private JTextField origin;
 	/** Input for destination. */
@@ -43,8 +45,8 @@ public class FareCalculatorUI extends JFrame {
 	/** TextField for show estimated taxi fare from origin and destination. */
 	private JTextField fare;
 	
-	public FareCalculatorUI() {
-		
+	public FareCalculatorUI(FareCalculator estimator) {
+		this.estimator = estimator;
 	}
 	
 	/** Run this GUi. */
@@ -112,10 +114,6 @@ public class FareCalculatorUI extends JFrame {
 		estimate = new JButton("Estimate");
 		JLabel originText = new JLabel("Origin:");
 		JLabel destinationText = new JLabel("Destination:");
-		
-//		originText.setAlignmentX( Component.LEFT_ALIGNMENT );
-//		destinationText.setAlignmentX( Component.LEFT_ALIGNMENT );
-//		estimate.setAlignmentX( Component.RIGHT_ALIGNMENT );
 		
 		place.add(originText);
 		place.add(origin);
