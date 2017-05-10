@@ -12,15 +12,21 @@ import java.util.Map;
  *
  */
 public class Route implements Iterable<Step> {
-	List<Step> route;
-	List<Object> stepList;
+	private List<Step> route;
+	private List<Object> stepList;
 	
-	
+	/**
+	 * Initialize Route
+	 * @param stepList - list of step from JSON
+	 */
 	public Route(List<Object> stepList) {
 		this.stepList = stepList;
 		initSteps();
 	}
 	
+	/**
+	 * Add every step from stepList into route list.
+	 */
 	private void initSteps() {
 		route = new ArrayList<Step>();
 		for( int i=0 ; i<stepList.size() ; i++ ) {
@@ -31,7 +37,8 @@ public class Route implements Iterable<Step> {
 			route.add(thisStep);
 		}
 	}
-
+	
+	/** Make Route Iterable. */
 	@Override
 	public Iterator<Step> iterator() {
 		return route.iterator();

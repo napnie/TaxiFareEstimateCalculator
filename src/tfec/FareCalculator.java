@@ -106,7 +106,7 @@ public class FareCalculator {
 	 * @return true if it is estimated
 	 */
 	public boolean isRouteEstimated() {
-		if( !data.getStatus().equals("OK") || data == null ) return false;
+		if( !data.getDirectionStatus().equals("OK") || data == null ) return false;
 		return true;
 	}
 	
@@ -115,7 +115,7 @@ public class FareCalculator {
 	 * @return request's status, need to call estimateRoute first or will throw NullPointerException
 	 */
 	public String getRequestStatus() {
-		return data.getStatus();
+		return data.getDirectionStatus();
 	}
 	
 	/**
@@ -133,7 +133,8 @@ public class FareCalculator {
 	 */
 	public double estimateFare() {
 		final double SEC_TO_HOUR = 1/(60.0*60) ;
-		if( isRouteEstimated() ) return startFare + (runFare * distance) + ( (waitTime * SEC_TO_HOUR) * waitFare);
+		final double METER_TO_KILOMETER = 1.0/1000;
+		if( isRouteEstimated() ) return startFare + (runFare * (distance * METER_TO_KILOMETER)) + ( (waitTime * SEC_TO_HOUR) * waitFare);
 		return 0;
 	}
 	
@@ -148,25 +149,10 @@ public class FareCalculator {
 			hint = null;
 			distance = data.getDistance();
 			duration = data.getDuration();
-			waitTime = calculateWaitTime();
-			estimateFare();
+			waitTime = data.getWaitTime();
 		} else {
-			hint = readHint( data.getStatus() );
+			hint = readHint( data.getDirectionStatus() );
 		}
-	}
-	
-	/**
-	 * Calculate wait time from step duration in route.
-	 * @return wait time of this route
-	 */
-	private double calculateWaitTime() {
-		Route route = data.getRoute();
-		double waitTime = 0;
-		for(Step step : route) {
-			waitTime += step.getDuration();
-		}
-		waitTime -= duration;
-		return waitTime;
 	}
 	
 	/**

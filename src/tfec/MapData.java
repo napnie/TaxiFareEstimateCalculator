@@ -24,11 +24,14 @@ import org.stringtree.json.JSONReader;
  */
 public class MapData {
 	/** Reader for JSON. */
-	JSONReader reader = new JSONReader();
+	static JSONReader reader = new JSONReader();
 	/** All detail from google map api. */
-	Map<String,Object> geocodedWaypoints;
+	Map<String,Object> directionMap;
 	/** All detail concern route. */
 	Map<String,Object> routeMap;
+	
+	Map<String,Object> distanceMap;
+	Map<String,Object> distanceDetail;
 	
 	private static MapData data;
 	
@@ -36,11 +39,56 @@ public class MapData {
 	
 	public static MapData getInstance(String origin, String destination) {
 		data = new MapData();
-		data.initializeMap( getJSON( getDirectionRequest(origin, destination) ) );
+		String directionURL = getDirectionRequest(origin, destination);
+		String distanceURL = getDistanceRequest(origin, destination);
+		data.setDirectionMap( initializeMap( getJSON( directionURL ) ) );
 		data.initializeRouteMap();
+		
+		data.setDistanceMap( initializeMap( getJSON( distanceURL ) ) );
+		data.initializeDistanceDetail();
+		
 		return data;
 	}
 	
+	public int getWaitTime() {
+		@SuppressWarnings("unchecked")
+		Map<String,Object> duration = (Map<String,Object>) distanceDetail.get("duration");
+		String waitTimeText = String.valueOf( duration.get("value") );
+		int waitTime = Integer.parseInt(waitTimeText);
+		if( getDuration() > waitTime ) waitTime = 0;
+		else waitTime = waitTime - getDuration();
+		return waitTime;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void initializeDistanceDetail() {
+		List<Object> rows = (List<Object>) distanceMap.get("rows");
+		Map<String,Object> innerRows = (Map<String,Object>) rows.get(0);
+		List<Object> elements = (List<Object>) innerRows.get("elements");
+		Map<String,Object> innerElements = (Map<String,Object>) elements.get(0);
+		distanceDetail = innerElements;
+	}
+	
+	private void setDistanceMap(Map<String,Object> map) {
+		distanceMap = map;
+	}
+	
+	private void setDirectionMap(Map<String,Object> map) {
+		directionMap = map;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static Map<String,Object> initializeMap(String json) {
+		Object jsonObject = reader.read(json);
+		Map<String,Object> map = null;
+		if(jsonObject instanceof Map) map = (Map<String,Object>) reader.read(json);
+		return map;
+	}
+	
+	public String getDistanceStatus() {
+		return (String) distanceMap.get("status");
+	}
+
 	/**
 	 * Get JSON file from google server.
 	 * @param url - google api request
@@ -91,7 +139,7 @@ public class MapData {
 	 */
 	@SuppressWarnings("unchecked")
 	private void initializeRouteMap() {
-		List<Object> routesList = (List<Object>) geocodedWaypoints.get("routes");
+		List<Object> routesList = (List<Object>) directionMap.get("routes");
 		Map<String,Object> routesMap = (Map<String,Object>) routesList.get(0);
 		List<Object> legsList = (List<Object>) routesMap.get("legs");
 		routeMap = (Map<String,Object>) legsList.get(0);
@@ -150,18 +198,8 @@ public class MapData {
 	 * Get status from JSON.
 	 * @return status of API request
 	 */
-	public String getStatus() {
-		return (String) geocodedWaypoints.get("status");
-	}
-	
-	/**
-	 * Turn JSON string into Map and store it in geocodedWaypoint.
-	 * @param JSON in String.
-	 */
-	@SuppressWarnings("unchecked")
-	private void initializeMap(String json) {
-		Object jsonObject = reader.read(json);
-		if(jsonObject instanceof Map) geocodedWaypoints = (Map<String,Object>) reader.read(json);
+	public String getDirectionStatus() {
+		return (String) directionMap.get("status");
 	}
 	
 	/**
@@ -202,6 +240,13 @@ public class MapData {
 		String link = "https://maps.googleapis.com/maps/api/directions/json?origin="
 						+ formalize(origin) + "&destination=" + formalize(destination)
 						+ "&language=en&region=th&key=" + readAPIKey();
+		if( link.length() > 8192 ) throw new IllegalArgumentException();
+		return link;
+	}
+	
+	private static String getDistanceRequest(String origin, String destination) {
+		String link = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="
+				+ formalize(origin) +"&destinations=" + formalize(destination) + "&language=en&key=" + readAPIKey();
 		if( link.length() > 8192 ) throw new IllegalArgumentException();
 		return link;
 	}
