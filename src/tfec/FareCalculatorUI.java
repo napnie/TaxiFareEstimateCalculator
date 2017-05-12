@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 /**
  * GUI for Taxi Fare Estimate Calculator (TFEC) program.
@@ -34,7 +35,7 @@ public class FareCalculatorUI extends JFrame {
 	/** Input for waiting fare rate. */
 	private JTextField waitFare;
 	/** Button for set new fare rate. */
-	private JButton setFare;
+//	private JButton setFare;
 	
 	/** TextField for show distance between origin and destination. */
 	private JTextField distance;
@@ -68,6 +69,11 @@ public class FareCalculatorUI extends JFrame {
 		add(leftPanel, BorderLayout.WEST);
 		add(centerPanel, BorderLayout.CENTER);
 		add(rightPanel, BorderLayout.EAST);
+		
+		startFare.setText( String.valueOf( estimator.getStartFare() ) );
+		runFare.setText( String.valueOf( estimator.getRunFare() ) );
+		waitFare.setText( String.valueOf( estimator.getWaitFare() ) );
+		
 		pack();
 	}
 	
@@ -102,6 +108,11 @@ public class FareCalculatorUI extends JFrame {
 		duration.setEditable(false);
 		waitTime.setEditable(false);
 		fare.setEditable(false);
+		
+		distance.setHorizontalAlignment(SwingConstants.RIGHT);
+		duration.setHorizontalAlignment(SwingConstants.RIGHT);
+		waitTime.setHorizontalAlignment(SwingConstants.RIGHT);
+		fare.setHorizontalAlignment(SwingConstants.RIGHT);
 	}
 	
 	/** Initialize left panel of this GUI. */
@@ -112,6 +123,7 @@ public class FareCalculatorUI extends JFrame {
 		place.setLayout(new BoxLayout(place, BoxLayout.Y_AXIS) );
 		initilizePlaceInput(10);
 		estimate = new JButton("Estimate");
+		estimate.addActionListener( (event) -> estimateAction() );
 		JLabel originText = new JLabel("Origin:");
 		JLabel destinationText = new JLabel("Destination:");
 		
@@ -133,8 +145,8 @@ public class FareCalculatorUI extends JFrame {
 		initField(fareInput, "1hour Wating: ", waitFare ,"Baht");
 		
 		fareRate.add(fareInput);
-		setFare = new JButton("Set");
-		fareRate.add(setFare);
+//		setFare = new JButton("Set");
+//		fareRate.add(setFare);
 		
 		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS) );
 		leftPanel.add(place);
@@ -145,6 +157,21 @@ public class FareCalculatorUI extends JFrame {
 		return leftPanel;
 	}
 	
+	private void estimateAction() {
+		// TODO Auto-generated method stub
+		String origin = this.origin.getText();
+		String destination = this.destination.getText();
+		estimator.estimateRoute(origin, destination);
+		distance.setText( formatResult( estimator.getDistance() ) );
+		duration.setText( formatResult( estimator.getDuration() ) );
+		waitTime.setText( formatResult( estimator.getWaitTime() ) );
+		fare.setText( formatResult( estimator.estimateFare() ) );
+	}
+	
+	private String formatResult(double result) {
+		return String.format("%.2f", result );
+	}
+
 	/** Initialize input of Fare Rate panel. */
 	private void initilizeFareSet(int width) {
 		startFare = new JTextField(width);

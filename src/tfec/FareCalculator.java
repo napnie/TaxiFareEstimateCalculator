@@ -1,10 +1,6 @@
 package tfec;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Locale;
-import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 /**
@@ -27,6 +23,10 @@ public class FareCalculator {
 	private double waitTime;
 	
 	private String hint;
+	
+	private final double SEC_TO_HOUR = 1/(60.0*60) ;
+	private final double METER_TO_KILOMETER = 1.0/1000;
+	private final double SEC_TO_MINUTE = 1/60.0; 
 	
 	private static final String CONFIG_NAME = "properties.config";
 	private static final Locale locale = new Locale("en");
@@ -60,12 +60,20 @@ public class FareCalculator {
 		this.startFare = startFare;
 	}
 	
+	public double getStartFare() {
+		return startFare;
+	}
+	
 	/**
 	 * Set Running Fare rate per km.
 	 * @param runFare
 	 */
 	public void setRunFare(double runFare) {
 		this.runFare = runFare;
+	}
+	
+	public double getRunFare() {
+		return runFare;
 	}
 	
 	/**
@@ -76,13 +84,17 @@ public class FareCalculator {
 		this.waitFare = waitFare;
 	}
 	
+	public double getWaitFare() {
+		return runFare;
+	}
+	
 	/**
-	 * Get distance of estimated route in meter.
+	 * Get distance of estimated route in kilometer.
 	 * Will return 0 if did not call estimateRoute() first.
 	 * @return distance of estimated route
 	 */
 	public double getDistance() {
-		if( isRouteEstimated() ) return distance;
+		if( isRouteEstimated() ) return distance * METER_TO_KILOMETER;
 		return 0;
 	}
 	
@@ -92,7 +104,7 @@ public class FareCalculator {
 	 * @return duration of estimated route
 	 */
 	public double getDuration() {
-		if( isRouteEstimated() ) return duration;
+		if( isRouteEstimated() ) return duration * SEC_TO_MINUTE;
 		return 0;
 	}
 	
@@ -137,8 +149,7 @@ public class FareCalculator {
 	 * @return estimated fare of taxi.
 	 */
 	public double estimateFare() {
-		final double SEC_TO_HOUR = 1/(60.0*60) ;
-		final double METER_TO_KILOMETER = 1.0/1000;
+		
 		if( isRouteEstimated() ) return startFare + (runFare * (distance * METER_TO_KILOMETER)) + ( (waitTime * SEC_TO_HOUR) * waitFare);
 		return 0;
 	}
