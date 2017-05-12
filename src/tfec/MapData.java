@@ -1,7 +1,5 @@
 package tfec;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -10,8 +8,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 import org.stringtree.json.JSONReader;
@@ -26,54 +24,33 @@ public class MapData {
 	/** Reader for JSON. */
 	static JSONReader reader = new JSONReader();
 	/** All detail from google map api. */
-	Map<String,Object> directionMap;
+	static Map<String,Object> directionMap;
 	/** All detail concern route. */
-	Map<String,Object> routeMap;
+	static Map<String,Object> routeMap;
 	
-	Map<String,Object> distanceMap;
-	Map<String,Object> distanceDetail;
-	
-	private static MapData data;
+	private static final String API_BUNDLE_NAME = "properties.sensitive_data";
+	private static final Locale locale = new Locale("en");
+	private static final ResourceBundle sd = ResourceBundle.getBundle(API_BUNDLE_NAME, locale);
 	
 	private MapData(){}
 	
-	public static MapData getInstance(String origin, String destination) {
-		data = new MapData();
+	public static Route generateRoute(String origin, String destination) {
 		String directionURL = getDirectionRequest(origin, destination);
-		String distanceURL = getDistanceRequest(origin, destination);
-		data.setDirectionMap( initializeMap( getJSON( directionURL ) ) );
-		data.initializeRouteMap();
 		
-		data.setDistanceMap( initializeMap( getJSON( distanceURL ) ) );
-		data.initializeDistanceDetail();
+		setDirectionMap( initializeMap( getJSON( directionURL ) ) );
+		initializeRouteMap();
 		
-		return data;
+		return getRoute();
 	}
 	
-	public int getWaitTime() {
+	public static int getWaitTime() {
 		@SuppressWarnings("unchecked")
-		Map<String,Object> duration = (Map<String,Object>) distanceDetail.get("duration");
-		String waitTimeText = String.valueOf( duration.get("value") );
-		int waitTime = Integer.parseInt(waitTimeText);
-		if( getDuration() > waitTime ) waitTime = 0;
-		else waitTime = waitTime - getDuration();
-		return waitTime;
+		Map<String,Object> durationMap = (Map<String,Object>) getRouteMap().get("duration_in_traffic");
+		String duration = String.valueOf( durationMap.get("value") );
+		return Integer.parseInt(duration);
 	}
 	
-	@SuppressWarnings("unchecked")
-	private void initializeDistanceDetail() {
-		List<Object> rows = (List<Object>) distanceMap.get("rows");
-		Map<String,Object> innerRows = (Map<String,Object>) rows.get(0);
-		List<Object> elements = (List<Object>) innerRows.get("elements");
-		Map<String,Object> innerElements = (Map<String,Object>) elements.get(0);
-		distanceDetail = innerElements;
-	}
-	
-	private void setDistanceMap(Map<String,Object> map) {
-		distanceMap = map;
-	}
-	
-	private void setDirectionMap(Map<String,Object> map) {
+	private static void setDirectionMap(Map<String,Object> map) {
 		directionMap = map;
 	}
 	
@@ -83,10 +60,6 @@ public class MapData {
 		Map<String,Object> map = null;
 		if(jsonObject instanceof Map) map = (Map<String,Object>) reader.read(json);
 		return map;
-	}
-	
-	public String getDistanceStatus() {
-		return (String) distanceMap.get("status");
 	}
 
 	/**
@@ -130,7 +103,7 @@ public class MapData {
 	 * Return routeMap.
 	 * @return Map of route
 	 */
-	private Map<String,Object> getRouteMap() {
+	private static Map<String,Object> getRouteMap() {
 		return routeMap;
 	}
 
@@ -138,7 +111,7 @@ public class MapData {
 	 * Initialize all detail concern this route to Map.
 	 */
 	@SuppressWarnings("unchecked")
-	private void initializeRouteMap() {
+	private static void initializeRouteMap() {
 		List<Object> routesList = (List<Object>) directionMap.get("routes");
 		Map<String,Object> routesMap = (Map<String,Object>) routesList.get(0);
 		List<Object> legsList = (List<Object>) routesMap.get("legs");
@@ -149,7 +122,7 @@ public class MapData {
 	 * Get distance from JSON.
 	 * @return distance in meter
 	 */
-	public int getDistance() {
+	private static int getDistance() {
 		@SuppressWarnings("unchecked")
 		Map<String,Object> distanceMap = (Map<String,Object>) getRouteMap().get("distance");
 		String distance = String.valueOf( distanceMap.get("value") );
@@ -160,7 +133,7 @@ public class MapData {
 	 * Get duration from JSON.
 	 * @return duration in seconds
 	 */
-	public int getDuration() {
+	private static int getDuration() {
 		@SuppressWarnings("unchecked")
 		Map<String,Object> durationMap = (Map<String,Object>) getRouteMap().get("duration");
 		String duration = String.valueOf( durationMap.get("value") );
@@ -171,7 +144,7 @@ public class MapData {
 	 * Get origin of route.
 	 * @return origin of this route
 	 */
-	public String getOrigin() {
+	private static String getOrigin() {
 		return (String) getRouteMap().get("start_address");
 	}
 	
@@ -179,7 +152,7 @@ public class MapData {
 	 * Get destination of route.
 	 * @return destination of this route
 	 */
-	public String getDestination() {
+	private static String getDestination() {
 		return (String) getRouteMap().get("end_address");
 	}
 	
@@ -187,47 +160,34 @@ public class MapData {
 	 * Get Route contain every steps in this route.
 	 * @return Route that contain every steps in this route
 	 */
-	public Route getRoute() {
+	private static Route getRoute() {
 		@SuppressWarnings("unchecked")
 		List<Object> stepList = (List<Object>) getRouteMap().get("steps");
-		
-		return new Route(stepList);
+		Route route = new Route(stepList);
+		route.setDestination( getDestination() );
+		route.setDistance( getDistance() );
+		route.setDuration( getDuration() );
+		route.setOrigin( getOrigin() );
+		route.setWaitTime( getWaitTime() );;
+		return route;
 	}
 	
 	/**
 	 * Get status from JSON.
 	 * @return status of API request
 	 */
-	public String getDirectionStatus() {
+	public static String getDirectionStatus() {
 		return (String) directionMap.get("status");
-	}
-	
-	/**
-	 * Get ResourceBundle from config.properties
-	 * @return ResourceBundle of config.properties
-	 */
-	private static ResourceBundle readAPIProperties() {
-		FileInputStream file;
-		try {
-			file = new FileInputStream("src/sensitive_data.properties");
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException( e.getMessage() );
-		}
-		ResourceBundle sensitiveData = null;
-		try {
-			sensitiveData = new PropertyResourceBundle(file);
-		} catch (IOException e) {
-			throw new RuntimeException( e.getMessage() );
-		}
-		return sensitiveData;
 	}
 	
 	/**
 	 * Read API key from config.properties
 	 * @return api key
 	 */
-	private static String readAPIKey() {
-		return readAPIProperties().getString("api");
+	private static String getAPIKey() {
+		String key = "api.key";
+		String api = sd.getString(key);
+		return api;
 	}
 	
 	/**
@@ -236,17 +196,10 @@ public class MapData {
 	 * @param destination - Destination point
 	 * @return API request to Google Map Direction
 	 */
-	private static String getDirectionRequest(String origin, String destination) {
+	public static String getDirectionRequest(String origin, String destination) {
 		String link = "https://maps.googleapis.com/maps/api/directions/json?origin="
 						+ formalize(origin) + "&destination=" + formalize(destination)
-						+ "&language=en&region=th&key=" + readAPIKey();
-		if( link.length() > 8192 ) throw new IllegalArgumentException();
-		return link;
-	}
-	
-	private static String getDistanceRequest(String origin, String destination) {
-		String link = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="
-				+ formalize(origin) +"&destinations=" + formalize(destination) + "&language=en&key=" + readAPIKey();
+						+ "&language=en&region=th&departure_time=now&key=" + getAPIKey();
 		if( link.length() > 8192 ) throw new IllegalArgumentException();
 		return link;
 	}

@@ -15,6 +15,12 @@ public class Route implements Iterable<Step> {
 	private List<Step> route;
 	private List<Object> stepList;
 	
+	private int distance;
+	private int duration;
+	private int waitTime;
+	private String origin;
+	private String destination;
+	
 	/**
 	 * Initialize Route
 	 * @param stepList - list of step from JSON
@@ -42,6 +48,46 @@ public class Route implements Iterable<Step> {
 	@Override
 	public Iterator<Step> iterator() {
 		return route.iterator();
+	}
+
+	public int getDistance() {
+		return distance;
+	}
+
+	public void setDistance(int distance) {
+		this.distance = distance;
+	}
+
+	public int getDuration() {
+		return duration;
+	}
+
+	public void setDuration(int duration) {
+		this.duration = duration;
+	}
+
+	public String getOrigin() {
+		return origin;
+	}
+
+	public void setOrigin(String origin) {
+		this.origin = origin;
+	}
+
+	public String getDestination() {
+		return destination;
+	}
+
+	public void setDestination(String destination) {
+		this.destination = destination;
+	}
+
+	public int getWaitTime() {
+		return waitTime;
+	}
+
+	public void setWaitTime(int waitTime) {
+		this.waitTime = waitTime;
 	}
 	
 }

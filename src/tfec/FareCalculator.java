@@ -3,6 +3,7 @@ package tfec;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
@@ -13,7 +14,7 @@ import java.util.ResourceBundle;
  *
  */
 public class FareCalculator {
-	private MapData data;
+	private Route route;
 	/** Fare rate at the beginning. */
 	private double startFare;
 	/** Fare rate when running in km */
@@ -26,6 +27,10 @@ public class FareCalculator {
 	private double waitTime;
 	
 	private String hint;
+	
+	private static final String CONFIG_NAME = "properties.config";
+	private static final Locale locale = new Locale("en");
+	private static final ResourceBundle config = ResourceBundle.getBundle(CONFIG_NAME, locale);
 	
 	/**
 	 * Initialize FareCalculator with default argument.
@@ -106,7 +111,7 @@ public class FareCalculator {
 	 * @return true if it is estimated
 	 */
 	public boolean isRouteEstimated() {
-		if( !data.getDirectionStatus().equals("OK") || data == null ) return false;
+		if( !getRequestStatus().equals("OK") ) return false;
 		return true;
 	}
 	
@@ -115,7 +120,7 @@ public class FareCalculator {
 	 * @return request's status, need to call estimateRoute first or will throw NullPointerException
 	 */
 	public String getRequestStatus() {
-		return data.getDirectionStatus();
+		return MapData.getDirectionStatus();
 	}
 	
 	/**
@@ -144,14 +149,14 @@ public class FareCalculator {
 	 * @param destination - Destination of route that want to calculate fare
 	 */
 	public void estimateRoute(String origin, String destination) {
-		data = MapData.getInstance(origin, destination);
+		route = MapData.generateRoute(origin, destination);
 		if( isRouteEstimated() ) {
 			hint = null;
-			distance = data.getDistance();
-			duration = data.getDuration();
-			waitTime = data.getWaitTime();
+			distance = route.getDistance();
+			duration = route.getDuration();
+			waitTime = route.getWaitTime();
 		} else {
-			hint = readHint( data.getDirectionStatus() );
+			hint = readHint( MapData.getDirectionStatus() );
 		}
 	}
 	
@@ -161,18 +166,6 @@ public class FareCalculator {
 	 * @return request status information
 	 */
 	private String readHint(String statusCode) {
-		FileInputStream file;
-		try {
-			file = new FileInputStream("src/config.properties");
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException( e.getMessage() );
-		}
-		ResourceBundle config = null;
-		try {
-			config = new PropertyResourceBundle(file);
-		} catch (IOException e) {
-			throw new RuntimeException( e.getMessage() );
-		}
 		return config.getString(statusCode);
 	}
 	
