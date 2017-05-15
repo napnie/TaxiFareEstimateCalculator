@@ -34,8 +34,6 @@ public class FareCalculatorUI extends JFrame {
 	private JTextField runFare;
 	/** Input for waiting fare rate. */
 	private JTextField waitFare;
-	/** Button for set new fare rate. */
-//	private JButton setFare;
 	
 	/** TextField for show distance between origin and destination. */
 	private JTextField distance;
@@ -123,7 +121,10 @@ public class FareCalculatorUI extends JFrame {
 		place.setLayout(new BoxLayout(place, BoxLayout.Y_AXIS) );
 		initilizePlaceInput(10);
 		estimate = new JButton("Estimate");
-		estimate.addActionListener( (event) -> estimateAction() );
+		estimate.addActionListener( (event) -> {
+			Thread thread = new Thread( () -> estimateAction() );
+			thread.start();
+		} );
 		JLabel originText = new JLabel("Origin:");
 		JLabel destinationText = new JLabel("Destination:");
 		
@@ -141,12 +142,10 @@ public class FareCalculatorUI extends JFrame {
 		JPanel fareInput = new JPanel();
 		fareInput.setLayout(new GridLayout(3, 3) );
 		initField(fareInput, "Start: ", startFare ,"Baht");
-		initField(fareInput, "1km Run: ", runFare ,"Baht");
-		initField(fareInput, "1hour Wating: ", waitFare ,"Baht");
+		initField(fareInput, "Fare per 1 km Run: ", runFare ,"Baht");
+		initField(fareInput, "Fare per 1 hour Wating: ", waitFare ,"Baht");
 		
 		fareRate.add(fareInput);
-//		setFare = new JButton("Set");
-//		fareRate.add(setFare);
 		
 		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS) );
 		leftPanel.add(place);

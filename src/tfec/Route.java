@@ -83,7 +83,7 @@ public class Route implements Iterable<Step> {
 	}
 
 	public int getWaitTime() {
-		return waitTime;
+		return waitTime - duration;
 	}
 
 	public void setWaitTime(int waitTime) {

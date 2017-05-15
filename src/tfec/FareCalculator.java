@@ -85,7 +85,7 @@ public class FareCalculator {
 	}
 	
 	public double getWaitFare() {
-		return runFare;
+		return waitFare;
 	}
 	
 	/**

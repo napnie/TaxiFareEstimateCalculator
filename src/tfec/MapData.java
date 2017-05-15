@@ -118,6 +118,14 @@ public class MapData {
 		routeMap = (Map<String,Object>) legsList.get(0);
 	}
 	
+	public static String getPolyline() {
+		List<Object> routesList = (List<Object>) directionMap.get("routes");
+		Map<String,Object> routesMap = (Map<String,Object>) routesList.get(0);
+		Map<String,Object> overview_polyline = (Map<String,Object>) routesMap.get("overview_polyline");
+		return String.valueOf( overview_polyline.get("points") );
+		
+	}
+	
 	/**
 	 * Get distance from JSON.
 	 * @return distance in meter
