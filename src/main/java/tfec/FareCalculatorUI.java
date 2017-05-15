@@ -157,7 +157,6 @@ public class FareCalculatorUI extends JFrame {
 	}
 	
 	private void estimateAction() {
-		// TODO Auto-generated method stub
 		String origin = this.origin.getText();
 		String destination = this.destination.getText();
 		estimator.estimateRoute(origin, destination);

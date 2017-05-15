@@ -132,7 +132,7 @@ public class FareCalculator {
 	 * @return request's status, need to call estimateRoute first or will throw NullPointerException
 	 */
 	public String getRequestStatus() {
-		return MapData.getDirectionStatus();
+		return route.getStatus();
 	}
 	
 	/**
@@ -149,8 +149,9 @@ public class FareCalculator {
 	 * @return estimated fare of taxi.
 	 */
 	public double estimateFare() {
-		
-		if( isRouteEstimated() ) return startFare + (runFare * (distance * METER_TO_KILOMETER)) + ( (waitTime * SEC_TO_HOUR) * waitFare);
+		if( isRouteEstimated() ) {
+			return startFare + (runFare * (distance * METER_TO_KILOMETER)) + ( (waitTime * SEC_TO_HOUR) * waitFare);
+		}
 		return 0;
 	}
 	
@@ -167,7 +168,7 @@ public class FareCalculator {
 			duration = route.getDuration();
 			waitTime = route.getWaitTime();
 		} else {
-			hint = readHint( MapData.getDirectionStatus() );
+			hint = readHint( route.getStatus() );
 		}
 	}
 	
@@ -176,7 +177,7 @@ public class FareCalculator {
 	 * @param statusCode - status of request
 	 * @return request status information
 	 */
-	private String readHint(String statusCode) {
+	public String readHint(String statusCode) {
 		return config.getString(statusCode);
 	}
 	
