@@ -1,4 +1,4 @@
-package tfec;
+package com.napnie.tfec;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;

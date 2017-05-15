@@ -1,4 +1,4 @@
-package tfec;
+package com.napnie.tfec;
 
 import java.io.IOException;
 import java.io.InputStream;

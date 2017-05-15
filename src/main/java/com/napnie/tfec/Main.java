@@ -1,4 +1,4 @@
-package tfec;
+package com.napnie.tfec;
 
 /**
  * Run TFEC program.

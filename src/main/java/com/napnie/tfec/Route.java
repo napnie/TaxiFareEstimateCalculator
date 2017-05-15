@@ -1,4 +1,4 @@
-package tfec;
+package com.napnie.tfec;
 
 import java.util.ArrayList;
 import java.util.Iterator;

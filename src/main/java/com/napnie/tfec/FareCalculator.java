@@ -1,4 +1,4 @@
-package tfec;
+package com.napnie.tfec;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -28,7 +28,7 @@ public class FareCalculator {
 	private final double METER_TO_KILOMETER = 1.0/1000;
 	private final double SEC_TO_MINUTE = 1/60.0; 
 	
-	private static final String CONFIG_NAME = "properties.config";
+	private static final String CONFIG_NAME = "config";
 	private static final Locale locale = new Locale("en");
 	private static final ResourceBundle config = ResourceBundle.getBundle(CONFIG_NAME, locale);
 	
