@@ -2,6 +2,7 @@
 bin/
 .classpath
 .project
+target/
 
 sensitive_data.properties
 external/
