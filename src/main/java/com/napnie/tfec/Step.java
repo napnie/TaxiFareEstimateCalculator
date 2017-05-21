@@ -15,18 +15,6 @@ public class Step {
 	
 	public Step(JsonObject step) {
 		initAttributes(step);
-//		distance = step.getAsJsonObject("distance").get("value").getAsInt();
-//		duration = step.getAsJsonObject("duration").get("value").getAsInt();
-//		
-//		instruction = step.getAsJsonPrimitive("html_instructions").toString();
-//		instruction = formalize(instruction);
-//		
-//		polyline = step.getAsJsonObject("polyline").get("points").getAsString();
-//		travelMode = step.get("travel_mode").getAsString();
-//		
-//		String lat = step.getAsJsonObject("start_location").get("lat").getAsString();
-//		String lng = step.getAsJsonObject("start_location").get("lng").getAsString();
-//		location = lat + "," + lng ;
 	}
 	
 	private void initAttributes(JsonObject step) {
@@ -55,7 +43,7 @@ public class Step {
 	
 	public int getDuration() { return duration; }
 	
-	public String getHTMLInstruction() { return instruction; }
+	public String getHTMLInstruction() { return instruction.substring(1, instruction.length()-1 ); }
 	
 	public String getInstruction() { return formalize( instruction ); }
 	

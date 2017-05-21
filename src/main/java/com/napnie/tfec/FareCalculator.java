@@ -116,7 +116,7 @@ public class FareCalculator {
 	 * @return true if it is estimated
 	 */
 	public boolean isRouteEstimated() {
-		if( !getRequestStatus().equals("OK") ) return false;
+		if( route != null && !getRequestStatus().equals("OK") ) return false;
 		return true;
 	}
 	

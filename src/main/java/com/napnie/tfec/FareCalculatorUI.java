@@ -2,7 +2,6 @@ package com.napnie.tfec;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
@@ -15,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import com.napnie.tfec.ui.RouteMapGUI;
 import com.napnie.tfec.ui.StepUI;
 
 /**
@@ -54,7 +54,7 @@ public class FareCalculatorUI extends JFrame {
 	
 	private StepUI stepUI;
 	
-	private Thread estimateThread = new Thread( () -> estimateAction() ) ;
+	private RouteMapGUI centerPanel;
 	
 	public FareCalculatorUI(FareCalculator estimator) {
 		this.estimator = estimator;
@@ -72,13 +72,19 @@ public class FareCalculatorUI extends JFrame {
 		setTitle("Taxi Fare Estimate Calculator");
 		
 		JPanel leftPanel = initilizeLeftPanel();
-		JPanel centerPanel = new JPanel();
+		centerPanel = new RouteMapGUI();
 		JPanel rightPanel = initilizeRightPanel();
+		
+		status = new JLabel();
+		status.setBackground( Color.BLACK);
+		status.setHorizontalAlignment(SwingConstants.CENTER);
+		status.setText("Idle");
 		
 		setLayout(new BorderLayout());
 		add(leftPanel, BorderLayout.WEST);
 		add(centerPanel, BorderLayout.CENTER);
 		add(rightPanel, BorderLayout.EAST);
+		add(status, BorderLayout.SOUTH);
 		
 		startFare.setText( String.valueOf( estimator.getStartFare() ) );
 		runFare.setText( String.valueOf( estimator.getRunFare() ) );
@@ -91,7 +97,12 @@ public class FareCalculatorUI extends JFrame {
 	
 	private void setAction() {
 		ActionListener estimateAction = (event) -> { 
-			estimateThread.start();
+//			new Thread( () -> estimateAction() ) ;
+			try {
+				estimateAction();
+			} catch(Exception e) {
+				status.setText(e.getMessage());
+			}
 		};
 		estimate.addActionListener( estimateAction );
 		origin.addActionListener( estimateAction );
@@ -101,13 +112,9 @@ public class FareCalculatorUI extends JFrame {
 	/** Initialize right panel of this GUI. */
 	private JPanel initilizeRightPanel() {
 		JPanel rightPanel = new JPanel();
-		rightPanel.setMinimumSize(new Dimension(300, 700));
+//		rightPanel.setMinimumSize(new Dimension(300, 700));
 
-		status = new JLabel();
-
-		status.setBackground( Color.BLACK);
-		status.setHorizontalAlignment(SwingConstants.CENTER);
-		status.setText("Idle");
+		stepUI = new StepUI();
 		
 		// for resultPanel
 		JPanel resultPanel = new JPanel();
@@ -123,10 +130,9 @@ public class FareCalculatorUI extends JFrame {
 		initField(result, "Overall Price", fare, "Baht");
 		
 		resultPanel.add(result);
-		resultPanel.add(new JPanel());
 		
 		rightPanel.setLayout(new BorderLayout() );
-		rightPanel.add(status, BorderLayout.NORTH);
+		rightPanel.add(stepUI, BorderLayout.NORTH);
 		rightPanel.add(resultPanel, BorderLayout.SOUTH);
 		
 		return rightPanel;
@@ -179,11 +185,14 @@ public class FareCalculatorUI extends JFrame {
 		
 		fareRate.add(fareInput);
 		
-		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS) );
-		leftPanel.add(place);
-		leftPanel.add(fareRate);
+//		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS) );
+		leftPanel.setLayout(new BorderLayout() );
+		leftPanel.add(place, BorderLayout.NORTH);
+		leftPanel.add(fareRate, BorderLayout.SOUTH);
+		leftPanel.setPreferredSize(new Dimension(410 , 450+75) );
+		place.setPreferredSize(new Dimension(leftPanel.getWidth(), 150) );
+		fareRate.setPreferredSize(new Dimension(leftPanel.getWidth(), 150));
 		
-		leftPanel.add(new JPanel());
 		
 		return leftPanel;
 	}
@@ -193,6 +202,9 @@ public class FareCalculatorUI extends JFrame {
 		
 		String origin = this.origin.getText();
 		String destination = this.destination.getText();
+		
+		if( !estimator.isRouteEstimated() ) status.setText( estimator.readHint( estimator.getHint() ) );
+		
 		estimator.estimateRoute(origin, destination);
 		if( !estimator.isRouteEstimated() ) return;
 		distance.setText( formatResult( estimator.getDistance() ) );
@@ -200,14 +212,13 @@ public class FareCalculatorUI extends JFrame {
 		waitTime.setText( formatResult( estimator.getWaitTime() ) );
 		fare.setText( formatResult( estimator.estimateFare() ) );
 		
-
 		status.setText("Route Ploting");
-		
 		Route route = estimator.getRoute();
-		stepUI = new StepUI(route);
+		centerPanel.setMap(route.getOriginLocation(), route.getDestinationLocation());
+		
+		stepUI.setStep(route);
+		
 		status.setText("Done");
-		stepUI.run();
-
 	}
 	
 	private String formatResult(double result) {

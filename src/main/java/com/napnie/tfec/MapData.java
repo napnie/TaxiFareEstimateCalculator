@@ -24,7 +24,7 @@ public class MapData {
 //		System.out.println(url);
 		
 		createResult( json );
-
+		if( !result.get("status").getAsString().equals("OK") ) return null;
 		return getRoute( result );
 	}
 	
@@ -33,7 +33,6 @@ public class MapData {
 	}
 	
 	private static void createResult(BufferedReader json) {
-//		result = new Gson().fromJson(json, JsonObject.class);
 		result = new JsonParser().parse( json ).getAsJsonObject();
 	}
 
@@ -53,33 +52,10 @@ public class MapData {
 		}
 		BufferedReader in = new BufferedReader(new InputStreamReader(mapJSON, StandardCharsets.UTF_8));
 		return in;
-//		final int bufferSize = 1024;
-//		final char[] buffer = new char[bufferSize];
-//		final StringBuilder out = new StringBuilder();
-//		Reader in = null;
-//		try {
-//			in = new InputStreamReader(mapJSON, "UTF-8");
-//		} catch (UnsupportedEncodingException e) {
-//			throw new RuntimeException( e.getMessage() );
-//		}
-//		for (; ; ) {
-//			int rsz = 0;
-//			try {
-//				rsz = in.read(buffer, 0, buffer.length);
-//			} catch (IOException e) {
-//				throw new RuntimeException( e.getMessage() );
-//			}
-//			if (rsz < 0)
-//				break;
-//			out.append(buffer, 0, rsz);
-//		}
-//		return out.toString();
 	}
 	
 	private static String readAPIKey() {
-		String key = "api.key";
-		String api = PropertiesUtil.getProperties(PropertiesUtil.SENSITIVE_DATA_BUNDLE, key);
-		return api;
+		return PropertiesUtil.getAPIKey();
 	}
 
 	/**

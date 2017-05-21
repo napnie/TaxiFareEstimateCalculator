@@ -1,73 +1,101 @@
 package com.napnie.tfec.ui;
 
-import java.awt.Color;
-import java.util.Iterator;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 
-import javax.swing.JFrame;
-import javax.swing.JTextPane;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
+import javax.swing.JPanel;
 
 import com.napnie.tfec.Route;
 import com.napnie.tfec.Step;
+import com.sun.javafx.application.PlatformImpl;
+
+import javafx.collections.ObservableList;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import javafx.stage.Stage;
 
 @SuppressWarnings("serial")
-public class StepUI extends JFrame {
-	private Route route ;
-	private JTextPane inst;
-	
-	public StepUI(Route route) {
-		this.route = route;
-		setTitle("Route");
-	}
-	
-	public void run() {
+public class StepUI extends JPanel {
+	private Route route;
+
+	private JFXPanel jfxPanel;
+	private WebEngine webEngine;
+	private WebView browser;
+
+	public StepUI() {
 		initComponents();
-//		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		System.out.println("Hello?");
-		setVisible(true);
+		setPreferredSize(new Dimension(400, 626));
 	}
 
 	private void initComponents() {
-		inst = new JTextPane();
+		jfxPanel = new JFXPanel();
+		createScene();
+		setLayout(new BorderLayout());
 		
-		final String lineCutter = "---------------------------\n";
-		final int HEADSIZE = 20;
 		
-		inst.setText("");
-		appendInstruction("Origin: " + route.getOrigin() + "\n", Color.RED, HEADSIZE);
-		appendInstruction(lineCutter, null);
-		int stepIndex = 1;
-		Iterator<Step> step = route.iterator();
-		while(step.hasNext() ) {
-			appendInstruction(stepIndex++ + ". "+ step.next().getInstruction() +"\n" + lineCutter, null);
-		}
-		
-//		for(Step step : route) {
-//			appendInstruction(stepIndex++ + ". "+ step.getInstruction() +"\n" + lineCutter, null);
-//		}
-		appendInstruction("Destination: " + route.getDestination(), Color.GREEN, HEADSIZE);
-		
-		add(inst);
-		pack();
+		add(jfxPanel, BorderLayout.CENTER);
 	}
 	
-	private void appendInstruction(String text, Color color) {
-		appendInstruction(text, color, null);
-	}
-	
-	private void appendInstruction(String text, Color color, Integer size) {
-		StyledDocument doc = inst.getStyledDocument();
-		
-		System.out.println( "Try to append!: "+text );
-		
-        Style style = inst.addStyle("I'm a Style", null);
-        if(color != null) StyleConstants.setForeground(style, color);
-        if( size != null) StyleConstants.setFontSize(style, size);
+	private void createScene() {
+		PlatformImpl.startup(new Runnable() {
+			@Override
+			public void run() {
 
-        try { doc.insertString(doc.getLength(), text,style); }
-        catch (BadLocationException e){ System.out.println("Och!"); }
+				Stage stage = new Stage();
+				stage.setTitle("Step UI");
+				stage.setResizable(true);
+
+				Group root = new Group();
+				Scene scene = new Scene(root,80,20);
+				stage.setScene(scene);
+
+				browser = new WebView();
+				webEngine = browser.getEngine();
+
+				if( route == null ) webEngine.loadContent( "<html><body bgcolor=\"#000000\">"
+						+ "<font size=\"5\" color=\"white\">"
+						+ "No Step</font></body><html>" );
+				else webEngine.loadContent( initStep() );
+				
+				ObservableList<Node> children = root.getChildren();
+				children.add(browser);                     
+
+				jfxPanel.setScene(scene);  
+			}
+		});
 	}
+
+	public void setStep(Route route) {
+		this.route = route;
+		createScene();
+	}
+
+	private String initStep() {
+		StringBuilder stepPage = new StringBuilder();
+		stepPage.append("<html>"
+				+ "<head>" );
+		stepPage.append("   <script language=\"javascript\" type=\"text/javascript\">");  
+		stepPage.append("       function toBottom(){");  
+		stepPage.append("           window.scrollTo(0, document.body.scrollHeight);");  
+		stepPage.append("       }");  
+		stepPage.append("   </script>"); 
+		stepPage.append("<style>"
+				+ ".point { font-size: 170%; }"
+				+ ".step { font-szie: 90%; }"
+				+ "</style></head>"
+				+ "<body bgcolor=\"#000000\">"
+				+ "<font class=\"point\" color=\"red\"> Origin: " + route.getOrigin() + "<br></font>"
+				+ "<font class=\"step\" color=\"white\">" );
+		stepPage.append("<ol>");
+		for(Step step : route) stepPage.append( "<li>" + step.getHTMLInstruction() + "</li>");
+		stepPage.append("</ol>");
+		stepPage.append("</font><font class=\"point\" color=\"green\"> Destination: " + route.getDestination() + "</font>" );
+		return stepPage.toString();
+	}
+	
+
 }

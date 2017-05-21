@@ -12,4 +12,8 @@ public class PropertiesUtil {
 	public static String getProperties(String bundleName, String key) {
 		return ResourceBundle.getBundle(bundleName, locale).getString(key);
 	}
+	
+	public static String getAPIKey() {
+		return ResourceBundle.getBundle(SENSITIVE_DATA_BUNDLE, locale).getString("api.key");
+	}
 }
