@@ -1,8 +1,5 @@
 package com.napnie.tfec;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 /**
  * Calculate Taxi Fare from Google Maps Directions API.
  * @author Nitith Chayakul
@@ -27,10 +24,6 @@ public class FareCalculator {
 	private final double SEC_TO_HOUR = 1/(60.0*60) ;
 	private final double METER_TO_KILOMETER = 1.0/1000;
 	private final double SEC_TO_MINUTE = 1/60.0; 
-	
-	private static final String CONFIG_NAME = "config";
-	private static final Locale locale = new Locale("en");
-	private static final ResourceBundle config = ResourceBundle.getBundle(CONFIG_NAME, locale);
 	
 	/**
 	 * Initialize FareCalculator with default argument.
@@ -160,7 +153,7 @@ public class FareCalculator {
 	 * @param origin - Origin of route that want to calculate fare
 	 * @param destination - Destination of route that want to calculate fare
 	 */
-	public void estimateRoute(String origin, String destination) {
+	public synchronized void estimateRoute(String origin, String destination) {
 		route = MapData.generateRoute(origin, destination);
 		if( isRouteEstimated() ) {
 			hint = null;
@@ -172,13 +165,15 @@ public class FareCalculator {
 		}
 	}
 	
+	public Route getRoute() { return route; }
+	
 	/**
 	 * Read api request status information.
 	 * @param statusCode - status of request
 	 * @return request status information
 	 */
 	public String readHint(String statusCode) {
-		return config.getString(statusCode);
+		return PropertiesUtil.getProperties(PropertiesUtil.CONFIG_BUNDLE, statusCode);
 	}
 	
 }

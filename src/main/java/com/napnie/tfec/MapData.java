@@ -1,14 +1,12 @@
 package com.napnie.tfec;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.nio.charset.StandardCharsets;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -16,16 +14,12 @@ import com.google.gson.JsonParser;
 public class MapData {
 	
 	private static JsonObject result ;
-	
-	private static final String API_BUNDLE_NAME = "sensitive_data";
-	private static final Locale locale = new Locale("en");
-	private static final ResourceBundle sd = ResourceBundle.getBundle(API_BUNDLE_NAME, locale);
 
 	private MapData() {}
 	
 	public static Route generateRoute(String origin, String destination) {
 		String url = getDirectionRequest(origin, destination);
-		String json = getJSON( url );
+		BufferedReader json = getJSON( url );
 		
 //		System.out.println(url);
 		
@@ -38,7 +32,8 @@ public class MapData {
 		return new Route(result);
 	}
 	
-	private static void createResult(String json) {
+	private static void createResult(BufferedReader json) {
+//		result = new Gson().fromJson(json, JsonObject.class);
 		result = new JsonParser().parse( json ).getAsJsonObject();
 	}
 
@@ -47,7 +42,7 @@ public class MapData {
 	 * @param url - google api request
 	 * @return JSON in String
 	 */
-	private static String getJSON(String url) {
+	private static BufferedReader getJSON(String url) {
 		InputStream mapJSON = null;
 		try {
 			mapJSON = new URL(url).openStream();
@@ -56,32 +51,34 @@ public class MapData {
 		} catch (IOException io) {
 			throw new RuntimeException( io.getMessage() );
 		}
-		final int bufferSize = 1024;
-		final char[] buffer = new char[bufferSize];
-		final StringBuilder out = new StringBuilder();
-		Reader in = null;
-		try {
-			in = new InputStreamReader(mapJSON, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException( e.getMessage() );
-		}
-		for (; ; ) {
-			int rsz = 0;
-			try {
-				rsz = in.read(buffer, 0, buffer.length);
-			} catch (IOException e) {
-				throw new RuntimeException( e.getMessage() );
-			}
-			if (rsz < 0)
-				break;
-			out.append(buffer, 0, rsz);
-		}
-		return out.toString();
+		BufferedReader in = new BufferedReader(new InputStreamReader(mapJSON, StandardCharsets.UTF_8));
+		return in;
+//		final int bufferSize = 1024;
+//		final char[] buffer = new char[bufferSize];
+//		final StringBuilder out = new StringBuilder();
+//		Reader in = null;
+//		try {
+//			in = new InputStreamReader(mapJSON, "UTF-8");
+//		} catch (UnsupportedEncodingException e) {
+//			throw new RuntimeException( e.getMessage() );
+//		}
+//		for (; ; ) {
+//			int rsz = 0;
+//			try {
+//				rsz = in.read(buffer, 0, buffer.length);
+//			} catch (IOException e) {
+//				throw new RuntimeException( e.getMessage() );
+//			}
+//			if (rsz < 0)
+//				break;
+//			out.append(buffer, 0, rsz);
+//		}
+//		return out.toString();
 	}
 	
 	private static String readAPIKey() {
 		String key = "api.key";
-		String api = sd.getString(key);
+		String api = PropertiesUtil.getProperties(PropertiesUtil.SENSITIVE_DATA_BUNDLE, key);
 		return api;
 	}
 

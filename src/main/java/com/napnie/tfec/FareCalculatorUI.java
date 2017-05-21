@@ -1,7 +1,11 @@
 package com.napnie.tfec;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -10,6 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
+import com.napnie.tfec.ui.StepUI;
 
 /**
  * GUI for Taxi Fare Estimate Calculator (TFEC) program.
@@ -44,6 +50,12 @@ public class FareCalculatorUI extends JFrame {
 	/** TextField for show estimated taxi fare from origin and destination. */
 	private JTextField fare;
 	
+	private JLabel status;
+	
+	private StepUI stepUI;
+	
+	private Thread estimateThread = new Thread( () -> estimateAction() ) ;
+	
 	public FareCalculatorUI(FareCalculator estimator) {
 		this.estimator = estimator;
 	}
@@ -72,14 +84,35 @@ public class FareCalculatorUI extends JFrame {
 		runFare.setText( String.valueOf( estimator.getRunFare() ) );
 		waitFare.setText( String.valueOf( estimator.getWaitFare() ) );
 		
+		setAction();
+		
 		pack();
 	}
 	
+	private void setAction() {
+		ActionListener estimateAction = (event) -> { 
+			estimateThread.start();
+		};
+		estimate.addActionListener( estimateAction );
+		origin.addActionListener( estimateAction );
+		destination.addActionListener( estimateAction );
+	}
+
 	/** Initialize right panel of this GUI. */
 	private JPanel initilizeRightPanel() {
 		JPanel rightPanel = new JPanel();
-		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS) );
-		rightPanel.add( new JLabel("Estimated Price") );
+		rightPanel.setMinimumSize(new Dimension(300, 700));
+
+		status = new JLabel();
+
+		status.setBackground( Color.BLACK);
+		status.setHorizontalAlignment(SwingConstants.CENTER);
+		status.setText("Idle");
+		
+		// for resultPanel
+		JPanel resultPanel = new JPanel();
+		resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.Y_AXIS) );
+		resultPanel.add( new JLabel("Estimated Price") );
 		
 		JPanel result = new JPanel();
 		initilizeResult(10);
@@ -89,9 +122,12 @@ public class FareCalculatorUI extends JFrame {
 		initField(result, "Estimated Wating Time: ", waitTime, "minute");
 		initField(result, "Overall Price", fare, "Baht");
 		
-		rightPanel.add(result);
+		resultPanel.add(result);
+		resultPanel.add(new JPanel());
 		
-		rightPanel.add(new JPanel());
+		rightPanel.setLayout(new BorderLayout() );
+		rightPanel.add(status, BorderLayout.NORTH);
+		rightPanel.add(resultPanel, BorderLayout.SOUTH);
 		
 		return rightPanel;
 	}
@@ -121,10 +157,6 @@ public class FareCalculatorUI extends JFrame {
 		place.setLayout(new BoxLayout(place, BoxLayout.Y_AXIS) );
 		initilizePlaceInput(10);
 		estimate = new JButton("Estimate");
-		estimate.addActionListener( (event) -> {
-			Thread thread = new Thread( () -> estimateAction() );
-			thread.start();
-		} );
 		JLabel originText = new JLabel("Origin:");
 		JLabel destinationText = new JLabel("Destination:");
 		
@@ -157,13 +189,25 @@ public class FareCalculatorUI extends JFrame {
 	}
 	
 	private void estimateAction() {
+		status.setText("Calculating...");
+		
 		String origin = this.origin.getText();
 		String destination = this.destination.getText();
 		estimator.estimateRoute(origin, destination);
+		if( !estimator.isRouteEstimated() ) return;
 		distance.setText( formatResult( estimator.getDistance() ) );
 		duration.setText( formatResult( estimator.getDuration() ) );
 		waitTime.setText( formatResult( estimator.getWaitTime() ) );
 		fare.setText( formatResult( estimator.estimateFare() ) );
+		
+
+		status.setText("Route Ploting");
+		
+		Route route = estimator.getRoute();
+		stepUI = new StepUI(route);
+		status.setText("Done");
+		stepUI.run();
+
 	}
 	
 	private String formatResult(double result) {
@@ -196,5 +240,4 @@ public class FareCalculatorUI extends JFrame {
 		panel.add(new JLabel(" "+tailing) );
 	}
 	
-
 }

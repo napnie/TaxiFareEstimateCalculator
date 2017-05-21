@@ -22,10 +22,10 @@ public class Route implements Iterable<Step> {
 	private String destinationLocation;
 
 	public Route(JsonObject result) {
-		initialize(result);
+		initAttributes(result);
 	}
 	
-	private void initialize(JsonObject result) {
+	private void initAttributes(JsonObject result) {
 		status = result.getAsJsonPrimitive("status").getAsString();
 		JsonArray routeArray = result.getAsJsonArray("routes");
 		JsonObject innerRoute = routeArray.get(0).getAsJsonObject();
@@ -54,10 +54,15 @@ public class Route implements Iterable<Step> {
 	private void initStep(JsonArray steps) {
 		route = new ArrayList<Step>();
 		for(int i = 0 ; i<steps.size() ; i++) {
-			JsonObject step = steps.get(0).getAsJsonObject();
+			JsonObject step = steps.get(i).getAsJsonObject();
 			Step thisStep = new Step(step);
 			route.add(thisStep);
 		}
+	}
+	
+	public String getEmbledMapRequest() {
+		return "https://www.google.com/maps/embed/v1/directions?origin="
+						+ originLocation + "&destination=" + destinationLocation + "&key=";
 	}
 	
 	public String getDestinationLocation() { return destinationLocation; }
