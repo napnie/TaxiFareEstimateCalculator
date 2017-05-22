@@ -20,8 +20,13 @@ import com.napnie.tfec.ui.RouteMapGUI;
  */
 @SuppressWarnings("serial")
 public class FareCalculatorUI extends JFrame {
+	/** Default font for this GUI. */
 	private Font font = new Font( Font.SANS_SERIF, Font.PLAIN, 16 );
 	
+	/**
+	 * Initialize FareCalculatorUI with FareCalculator.
+	 * @param estimator - FareCalculator
+	 */
 	public FareCalculatorUI(FareCalculator estimator) {
 		initComponents(estimator);
 	}
@@ -58,6 +63,7 @@ public class FareCalculatorUI extends JFrame {
 		pack();
 	}
 	
+	/** Set font of component and its inner components */
 	private void setFont(Component component, Font font) {
 		component.setFont(font);
 		if( component instanceof Container) {

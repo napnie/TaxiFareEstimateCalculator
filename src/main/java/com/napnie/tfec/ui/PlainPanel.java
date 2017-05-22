@@ -4,6 +4,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+/**
+ * Abstract class for inner panel of TFEC GUI.
+ * @author Nitith Chayakul
+ *
+ */
 @SuppressWarnings("serial")
 public abstract class PlainPanel extends JPanel {
 	
@@ -20,6 +25,11 @@ public abstract class PlainPanel extends JPanel {
 		panel.add(new JLabel(" "+tailing) );
 	}
 	
+	/**
+	 * Format double into String.
+	 * @param result - double that to format
+	 * @return String of format result
+	 */
 	protected String formatField(double result) {
 		return String.format("%.2f", result );
 	}

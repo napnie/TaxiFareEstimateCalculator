@@ -15,6 +15,11 @@ import com.napnie.tfec.Route;
 
 import javafx.application.Platform;
 
+/**
+ * Info panel of accept infomation from user.
+ * @author Nitith Chayakul
+ *
+ */
 @SuppressWarnings("serial")
 public class InfoPanel extends PlainPanel {
 	/** Input for origin. */
@@ -31,12 +36,17 @@ public class InfoPanel extends PlainPanel {
 	/** Input for waiting fare rate. */
 	private JTextField waitFare;
 	
+	/** Result Panel for TFEC GUI. */
 	private final ResultPanel result;
+	/** Visual map for TFEC GUI. */
 	private final RouteMapGUI map;
+	/** Estimator for estimate fare. */
 	private final FareCalculator estimator;
 	
+	/** Announcer for announcer status or hint. */
 	private JLabel announcer;
 	
+	/** Initialize InfoPanel */
 	public InfoPanel(ResultPanel result, RouteMapGUI map, FareCalculator estimator) {
 		this.result = result;
 		this.map = map;
@@ -60,6 +70,9 @@ public class InfoPanel extends PlainPanel {
 	
 	public double getStartFare() { return Double.parseDouble( startFare.getText() ); }
 
+	/**
+	 * Initialize components.
+	 */
 	private void initComponents() {
 		JPanel place = new JPanel();
 		place.setLayout(new BoxLayout(place, BoxLayout.Y_AXIS) );
@@ -97,33 +110,39 @@ public class InfoPanel extends PlainPanel {
 		setAction();
 	}
 	
+	/** Action for estimate fare. */
 	private void estimateAction() {
-		warning("Estimating");
+		announce("Estimating");
 		String origin = getOrigin();
 		String destination = getDestination();
 		
 		estimator.estimateRoute(origin, destination);
 		if( !estimator.isRouteEstimated() ) {
-			warning( estimator.getHint() );
+			announce( estimator.getHint() );
 			return;
 		}
-		System.out.println("show result");
+		
 		result.setDistance( estimator.getDistance() );
 		result.setDuration( estimator.getDuration() );
 		result.setWaitTime( estimator.getWaitTime() );
 		result.setFare( estimator.estimateFare() );
 		
-		warning("Plot Step");
+		announce("Plot Step");
 		Route route = estimator.getRoute();
 		map.setMap(route.getOriginLocation(), route.getDestinationLocation());
 		
 		result.setStep(route);
-		warning("Done");
+		announce("Done");
 	}
 	
+	/** Set announcer. */
 	public void setAnnouncer(JLabel announcer) { this.announcer = announcer; }
 	
-	private void warning(String contact) { 
+	/**
+	 * Announce status of estimator to announcer.
+	 * @param contact - contact of announcement
+	 */
+	private void announce(String contact) { 
 		if(announcer != null) announcer.setText(contact); 
 	}
 	
@@ -136,7 +155,7 @@ public class InfoPanel extends PlainPanel {
 					try {
 						estimateAction();
 					} catch(Exception e) {
-						warning( "Error!:" + e.getMessage() );
+						announce( "Error!:" + e.getMessage() );
 					}
 				}
 			});

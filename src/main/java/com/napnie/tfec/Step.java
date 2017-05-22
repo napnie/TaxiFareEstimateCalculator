@@ -4,19 +4,37 @@ import org.jsoup.Jsoup;
 
 import com.google.gson.JsonObject;
 
+/**
+ * Detail of Step from Google Map API.
+ * @author Nitith Chayakul
+ *
+ */
 public class Step {
-	
+	/** Distance of this step. */
 	private int distance;
+	/** Duration of this step. */
 	private int duration;
+	/** Step's instruction. */
 	private String instruction;
+	/** Step's polyline. */
 	private String polyline;
+	/** Step's trevel mode. */
 	private String travelMode;
+	/** Step start point's location in latitude and longitude format. */
 	private String location;
 	
+	/**
+	 * Initialize Step.
+	 * @param step - JsonObject create from JSON from Google Map Direction API
+	 */
 	public Step(JsonObject step) {
 		initAttributes(step);
 	}
 	
+	/**
+	 * Extract attributes from JsonObject.
+	 * @param step - JsonObject create from JSON from Google Map Direction API
+	 */
 	private void initAttributes(JsonObject step) {
 		distance = step.getAsJsonObject("distance").get("value").getAsInt();
 		duration = step.getAsJsonObject("duration").get("value").getAsInt();
@@ -31,21 +49,19 @@ public class Step {
 		location = lat + "," + lng ;
 	}
 	
-	private String formalize(String instruction) {
-		instruction = instruction.substring(1, instruction.length()-1 );
-		return Jsoup.parse(instruction).body().text();
-//	    return instruction;
-	}
-	
 	public String getLocation() { return location; }
 	
 	public int getDistance() { return distance; }
 	
 	public int getDuration() { return duration; }
 	
+	/** Get instruction with html tag intact. */
 	public String getHTMLInstruction() { return instruction.substring(1, instruction.length()-1 ); }
 	
-	public String getInstruction() { return formalize( instruction ); }
+	/** Get instruction without html tag. */
+	public String getInstruction() { 
+		return Jsoup.parse(instruction.substring(1, instruction.length()-1 ) ).body().text(); 
+	}
 	
 	public String getPolyline() { return polyline; }
 	

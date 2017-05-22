@@ -18,6 +18,11 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
+/**
+ * Inner panel of ResultPanel for showing step in route.
+ * @author Nitith Chayakul
+ *
+ */
 @SuppressWarnings("serial")
 public class StepUI extends JPanel {
 	private Route route;
@@ -26,20 +31,22 @@ public class StepUI extends JPanel {
 	private WebEngine webEngine;
 	private WebView browser;
 
+	/** Initialize StepUI */
 	public StepUI() {
 		initComponents();
 		this.setPreferredSize(new Dimension(100, 100) );
 	}
 
+	/** Initialize components. */
 	private void initComponents() {
 		jfxPanel = new JFXPanel();
 		createScene();
 		setLayout(new BorderLayout());
 		
-		
 		add(jfxPanel, BorderLayout.CENTER);
 	}
 	
+	/** Generate page with Step instruction with HTML tag.  */
 	private void createScene() {
 		PlatformImpl.startup(new Runnable() {
 			@Override
@@ -69,11 +76,13 @@ public class StepUI extends JPanel {
 		});
 	}
 
+	/** Set route to show step. */
 	public void setStep(Route route) {
 		this.route = route;
 		createScene();
 	}
 
+	/** Generate HTML page with step instruction with HTML tag from list of step in route. */
 	private String initStep() {
 		StringBuilder stepPage = new StringBuilder();
 		stepPage.append("<html>"

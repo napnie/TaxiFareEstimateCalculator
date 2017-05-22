@@ -7,28 +7,56 @@ import java.util.List;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+/**
+ * Route detail.
+ * Only create from Google Map Direction API Request answer.
+ * @author Nitith Chayakul
+ *
+ */
 public class Route implements Iterable<Step> {
+	/** List of every steps in this route. */
 	private List<Step> route;
 	
+	/** Total distance of this route. */
 	private int distance;
+	/** Total duration of this route. */
 	private int duration;
+	/** Increase duration becuase of traffic in this route. */
 	private int trafficDuration;
+	/** Origin point's name  */
 	private String origin;
+	/** Destination point's name */
 	private String destination;
+	/** Overview polyline of this route. Only usable with Google Map API. */
 	private String overview_polyline;
+	/** Request status of Google Map Direction API. 
+	 * If status is anything other than "OK", this will be only initialized variable of Route Object.
+	 */
 	private String status;
 	
+	/** Origin point's location in "Latitude,Longitude" format. */
 	private String originLocation;
+	/** Destination point's location in "Latitude,Longitude" format. */
 	private String destinationLocation;
 
+	/**
+	 * Initialize complete Route object.
+	 * @param result - JsonObject of Google Map Direction API Request answer.
+	 */
 	public Route(JsonObject result) {
 		initAttributes(result);
 	}
 	
-	public Route(String status) {
-		this.status = status;
-	}
+	/**
+	 * Initialize Route that only Initialize status variable.
+	 * @param status - status of Google Map Direction API Request answer
+	 */
+	public Route(String status) { this.status = status; }
 	
+	/**
+	 * Extract attributes from Google Map Direction API Request answer.
+	 * @param result - Google Map Direction API Request answer
+	 */
 	private void initAttributes(JsonObject result) {
 		status = result.getAsJsonPrimitive("status").getAsString();
 		JsonArray routeArray = result.getAsJsonArray("routes");
@@ -51,10 +79,19 @@ public class Route implements Iterable<Step> {
 		initStep( innerLegs.getAsJsonArray("steps") );
 	}
 	
+	/**
+	 * Formalize polyline string.
+	 * @param polyline - polyline that want to formalize.
+	 * @return formalized polyline
+	 */
 	private String formalize(String polyline) {
 		return polyline.substring(1, polyline.length()-1 );
 	}
 	
+	/**
+	 * Create list of steps in this route.
+	 * @param steps - JsonArray of steps
+	 */
 	private void initStep(JsonArray steps) {
 		route = new ArrayList<Step>();
 		for(int i = 0 ; i<steps.size() ; i++) {
@@ -62,11 +99,6 @@ public class Route implements Iterable<Step> {
 			Step thisStep = new Step(step);
 			route.add(thisStep);
 		}
-	}
-	
-	public String getEmbledMapRequest() {
-		return "https://www.google.com/maps/embed/v1/directions?origin="
-						+ originLocation + "&destination=" + destinationLocation + "&key=";
 	}
 	
 	public String getDestinationLocation() { return destinationLocation; }
@@ -94,7 +126,5 @@ public class Route implements Iterable<Step> {
 	public Iterator<Step> iterator() {
 		return route.iterator();
 	}
-	
-	public List<Step> getSteps() { return route; }
 
 }

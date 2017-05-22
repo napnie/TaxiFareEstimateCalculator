@@ -11,27 +11,38 @@ import java.nio.charset.StandardCharsets;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+/**
+ * Request Map data from Google Map Direction API.
+ * @author Nitith Chayakul
+ *
+ */
 public class MapData {
-	
+	/** Request answer in JSON. */
 	private static JsonObject result ;
 
+	/** Private Constructor.
+	 *  Not allow to create this object.
+	 */
 	private MapData() {}
 	
+	/**
+	 * Generate Route from origin and destination.
+	 * If there is a error in request then route object will only contain status 
+	 * with that said error.
+	 * @param origin - origin point of route
+	 * @param destination - destination point of route
+	 * @return Route of this two point 
+	 * ,if request error then only status variable will be initialized.
+	 */
 	public static Route generateRoute(String origin, String destination) {
 		String url = getDirectionRequest(origin, destination);
 		BufferedReader json = getJSON( url );
 		
-//		System.out.println(url);
-		
-		createResult( json );
+		result = new JsonParser().parse( json ).getAsJsonObject();
 		
 		String status = result.get("status").getAsString();
 		if( !status.equals("OK") ) return new Route(status);
 		return new Route( result );
-	}
-	
-	private static void createResult(BufferedReader json) {
-		result = new JsonParser().parse( json ).getAsJsonObject();
 	}
 
 	/**
@@ -52,6 +63,10 @@ public class MapData {
 		return in;
 	}
 	
+	/**
+	 * Read api key.
+	 * @return api key
+	 */
 	private static String readAPIKey() {
 		return PropertiesUtil.getAPIKey();
 	}

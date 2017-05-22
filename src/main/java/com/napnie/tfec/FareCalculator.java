@@ -7,6 +7,7 @@ package com.napnie.tfec;
  *
  */
 public class FareCalculator {
+	/** Contain route to calculate. */
 	private Route route;
 	/** Fare rate at the beginning. */
 	private double startFare;
@@ -15,14 +16,21 @@ public class FareCalculator {
 	/** Fare rate when waiting for hour. */
 	private double waitFare;
 	
+	/** Distance of route in meter. */
 	private double distance;
+	/** Duration of route in second. */
 	private double duration;
+	/** Route's wait time in second. */
 	private double waitTime;
 	
+	/** Hint for request error. */
 	private String hint;
 	
+	/** Constant to convert second to hour. */
 	private final double SEC_TO_HOUR = 1/(60.0*60) ;
+	/** Constant to convert meter to kilometer. */
 	private final double METER_TO_KILOMETER = 1.0/1000;
+	/** Constant to convert second to minute. */
 	private final double SEC_TO_MINUTE = 1/60.0; 
 	
 	/**
@@ -47,36 +55,48 @@ public class FareCalculator {
 	
 	/**
 	 * Set Start Fare.
-	 * @param startFare
+	 * @param startFare - start fare rate
 	 */
 	public void setStartFare(double startFare) {
 		this.startFare = startFare;
 	}
 	
+	/**
+	 * Get Start Fare rate.
+	 * @return Start Fare rate
+	 */
 	public double getStartFare() {
 		return startFare;
 	}
 	
 	/**
 	 * Set Running Fare rate per km.
-	 * @param runFare
+	 * @param runFare - run fare rate
 	 */
 	public void setRunFare(double runFare) {
 		this.runFare = runFare;
 	}
 	
+	/**
+	 * Get run fare rate.
+	 * @return run fare rate
+	 */
 	public double getRunFare() {
 		return runFare;
 	}
 	
 	/**
 	 * Set Wait Fare rate per hour.
-	 * @param waitFare
+	 * @param waitFare - wait fare rate
 	 */
 	public void setWaitFare(double waitFare) {
 		this.waitFare = waitFare;
 	}
 	
+	/**
+	 * Get wait fare rate.
+	 * @return wait fare rate
+	 */
 	public double getWaitFare() {
 		return waitFare;
 	}

@@ -14,14 +14,20 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javax.swing.JPanel;
 
+/**
+ * RouteMapGUI is a panel for showing visual map.
+ * @author Nitith Chayakul
+ *
+ */
 @SuppressWarnings("serial")
 public class RouteMapGUI extends JPanel {  
-
 	private JFXPanel jfxPanel;
 	private WebEngine webEngine;  
 
+	/** Two point to generate map. */
 	private String[] mapPoint;
 
+	/** Initialize RouteMapGUI panel. */
 	public RouteMapGUI(){
 		initComponents();
 		Dimension dimension = new Dimension(799, 600 + 100);
@@ -29,8 +35,8 @@ public class RouteMapGUI extends JPanel {
 		setMaximumSize(dimension);
 	}
 
-	private void initComponents(){  
-
+	/** Initialize components in RouteMapGUI. */
+	private void initComponents(){ 
 		jfxPanel = new JFXPanel();  
 		createScene();  
 
@@ -38,6 +44,7 @@ public class RouteMapGUI extends JPanel {
 		add(jfxPanel, BorderLayout.CENTER);
 	}     
 
+	/** Generate page with Google Map Embed Map API HTML page.  */
 	private void createScene() {  
 		PlatformImpl.startup(new Runnable() {  
 			@Override
@@ -67,6 +74,7 @@ public class RouteMapGUI extends JPanel {
 		});  
 	}
 
+	/** Set origin and destination of map. */
 	public void setMap(String origin, String destination) {
 		if( mapPoint == null ) mapPoint = new String[2];
 		mapPoint[0] = origin;
@@ -74,6 +82,11 @@ public class RouteMapGUI extends JPanel {
 		createScene();
 	}
 	
+	/**
+	 * Generate HTML page in String.
+	 * An overview of thailand as a default page.
+	 * @return Thailand Map HTML page in String
+	 */
 	private String getDefualtPlace() {
     	String thai = "<html>"
     			+ "<body>"
@@ -85,6 +98,11 @@ public class RouteMapGUI extends JPanel {
   		return thai;
     }
     
+	/**
+	 * Generate HTML page in String.
+	 * An overview of route between two point.
+	 * @return Route Map HTML page in String
+	 */
 	private String getRouteMap(String origin, String destination) {
 		String html = 	"<html>\n"
 				+ "<body>\n"
@@ -97,5 +115,6 @@ public class RouteMapGUI extends JPanel {
 		return html;
 	}
 	
+	/** Get API Key. */
 	private String getAPIKey() { return PropertiesUtil.getAPIKey(); }
 }

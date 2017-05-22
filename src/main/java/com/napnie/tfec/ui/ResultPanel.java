@@ -11,6 +11,11 @@ import javax.swing.SwingConstants;
 
 import com.napnie.tfec.Route;
 
+/**
+ * Result panel for showing result to user.
+ * @author Nitith Chayakul
+ *
+ */
 @SuppressWarnings("serial")
 public class ResultPanel extends PlainPanel {
 	/** TextField for show distance between origin and destination. */
