@@ -24,12 +24,10 @@ public class MapData {
 //		System.out.println(url);
 		
 		createResult( json );
-		if( !result.get("status").getAsString().equals("OK") ) return null;
-		return getRoute( result );
-	}
-	
-	private static Route getRoute(JsonObject result) {
-		return new Route(result);
+		
+		String status = result.get("status").getAsString();
+		if( !status.equals("OK") ) return new Route(status);
+		return new Route( result );
 	}
 	
 	private static void createResult(BufferedReader json) {

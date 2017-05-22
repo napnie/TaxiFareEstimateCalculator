@@ -25,6 +25,10 @@ public class Route implements Iterable<Step> {
 		initAttributes(result);
 	}
 	
+	public Route(String status) {
+		this.status = status;
+	}
+	
 	private void initAttributes(JsonObject result) {
 		status = result.getAsJsonPrimitive("status").getAsString();
 		JsonArray routeArray = result.getAsJsonArray("routes");

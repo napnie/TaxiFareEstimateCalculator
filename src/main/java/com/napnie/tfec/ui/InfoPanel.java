@@ -1,7 +1,6 @@
 package com.napnie.tfec.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 
@@ -10,7 +9,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
 import com.napnie.tfec.FareCalculator;
 import com.napnie.tfec.Route;
@@ -36,6 +34,8 @@ public class InfoPanel extends PlainPanel {
 	private final ResultPanel result;
 	private final RouteMapGUI map;
 	private final FareCalculator estimator;
+	
+	private JLabel announcer;
 	
 	public InfoPanel(ResultPanel result, RouteMapGUI map, FareCalculator estimator) {
 		this.result = result;
@@ -88,45 +88,55 @@ public class InfoPanel extends PlainPanel {
 		
 		fareRate.add(fareInput);
 		
-//		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS) );
 		setLayout(new BorderLayout() );
 		add(place, BorderLayout.NORTH);
 		add(fareRate, BorderLayout.SOUTH);
-		setPreferredSize(new Dimension(410 , 450+75) );
-		place.setPreferredSize(new Dimension(getWidth(), 150) );
-		fareRate.setPreferredSize(new Dimension(getWidth(), 150));
+//		setPreferredSize(new Dimension(410 , 450+75) );
+//		place.setPreferredSize(new Dimension(getWidth(), 150) );
+//		fareRate.setPreferredSize(new Dimension(getWidth(), 150));
 		setAction();
 	}
 	
 	private void estimateAction() {
-		
+		warning("Estimating");
 		String origin = getOrigin();
 		String destination = getDestination();
 		
 		estimator.estimateRoute(origin, destination);
-		
-		if( !estimator.isRouteEstimated() ) return;
+		if( !estimator.isRouteEstimated() ) {
+			warning( estimator.getHint() );
+			return;
+		}
+		System.out.println("show result");
 		result.setDistance( estimator.getDistance() );
 		result.setDuration( estimator.getDuration() );
 		result.setWaitTime( estimator.getWaitTime() );
 		result.setFare( estimator.estimateFare() );
 		
+		warning("Plot Step");
 		Route route = estimator.getRoute();
 		map.setMap(route.getOriginLocation(), route.getDestinationLocation());
 		
 		result.setStep(route);
+		warning("Done");
 	}
 	
+	public void setAnnouncer(JLabel announcer) { this.announcer = announcer; }
+	
+	private void warning(String contact) { 
+		if(announcer != null) announcer.setText(contact); 
+	}
+	
+	/** Add ActionListener for estimate button and TextField for origin and destination. */
 	private void setAction() {
 		ActionListener estimateAction = (event) -> {
-			
 			Platform.runLater(new Runnable() {  
 				@Override
 				public void run() {
 					try {
 						estimateAction();
 					} catch(Exception e) {
-						
+						warning( "Error!:" + e.getMessage() );
 					}
 				}
 			});
