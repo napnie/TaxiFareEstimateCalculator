@@ -116,8 +116,8 @@ public class FareCalculator {
 	 * @return true if it is estimated
 	 */
 	public boolean isRouteEstimated() {
-		if( route != null && !getRequestStatus().equals("OK") ) return false;
-		return true;
+		if( route != null && getRequestStatus().equals("OK") ) return true;
+		return false;
 	}
 	
 	/**
@@ -160,7 +160,7 @@ public class FareCalculator {
 			distance = route.getDistance();
 			duration = route.getDuration();
 			waitTime = route.getWaitTime();
-		} else {
+		} else if( route != null) {
 			hint = readHint( route.getStatus() );
 		}
 	}

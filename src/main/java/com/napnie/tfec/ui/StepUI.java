@@ -28,7 +28,7 @@ public class StepUI extends JPanel {
 
 	public StepUI() {
 		initComponents();
-		setPreferredSize(new Dimension(400, 626));
+		this.setPreferredSize(new Dimension(100, 100) );
 	}
 
 	private void initComponents() {
