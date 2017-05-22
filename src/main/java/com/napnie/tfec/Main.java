@@ -1,10 +1,8 @@
 package com.napnie.tfec;
 
-import java.awt.Dimension;
-import java.util.Scanner;
-
-import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+
+import com.napnie.tfec.ui.FareCalculatorUI;
 
 /**
  * Run TFEC program.
@@ -18,6 +16,7 @@ public class Main {
 	public static void main(String[] arg) {
 		FareCalculator estimator = new FareCalculator();
 		FareCalculatorUI ui = new FareCalculatorUI(estimator);
+		
 		SwingUtilities.invokeLater(new Runnable() {  
 			@Override
 			public void run() {

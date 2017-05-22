@@ -1,4 +1,4 @@
-package com.napnie.tfec;
+package com.napnie.tfec.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -14,6 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import com.napnie.tfec.FareCalculator;
+import com.napnie.tfec.Route;
 import com.napnie.tfec.ui.RouteMapGUI;
 import com.napnie.tfec.ui.StepUI;
 
