@@ -33,9 +33,6 @@ public class InfoPanel extends PlainPanel {
 	/** Input for waiting fare rate. */
 	private JTextField waitFare;
 	
-	private final String NONE = "";
-	private String status;
-	
 	private final ResultPanel result;
 	private final RouteMapGUI map;
 	private final FareCalculator estimator;
@@ -98,7 +95,6 @@ public class InfoPanel extends PlainPanel {
 		setPreferredSize(new Dimension(410 , 450+75) );
 		place.setPreferredSize(new Dimension(getWidth(), 150) );
 		fareRate.setPreferredSize(new Dimension(getWidth(), 150));
-		status = NONE;
 		setAction();
 	}
 	
@@ -108,7 +104,6 @@ public class InfoPanel extends PlainPanel {
 		String destination = getDestination();
 		
 		estimator.estimateRoute(origin, destination);
-		if( !estimator.isRouteEstimated() ) status = estimator.readHint( estimator.getHint() ) ;
 		
 		if( !estimator.isRouteEstimated() ) return;
 		result.setDistance( estimator.getDistance() );
@@ -130,9 +125,8 @@ public class InfoPanel extends PlainPanel {
 				public void run() {
 					try {
 						estimateAction();
-						status = NONE;
 					} catch(Exception e) {
-						status = e.getMessage();
+						
 					}
 				}
 			});
