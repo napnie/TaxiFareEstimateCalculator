@@ -2,8 +2,6 @@
 
 **TFEC** is a maven project indirectly use Google Map Direction API and gson to deserialize JSON file from API request.
 
-***
-
 ## Index
 
 [**TFEC** Tech](./tech_stuff.md)

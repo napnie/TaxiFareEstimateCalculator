@@ -1,4 +1,6 @@
-[Home](./README.md)
+[Home](./README.md)  
+[**TFEC** Tech](./tech_stuff.md)
+
 ***
 
 # Maven
@@ -25,6 +27,7 @@ From [*Apache Maven*](https://maven.apache.org/) :
 ![maven project](./imgs/mv5.png)
 And we can add dependencies so that we can have other library.  
 For example we will add JUnit dependency code.
+
 ```
 <!-- https://mvnrepository.com/artifact/junit/junit -->
 <dependency>
@@ -32,8 +35,7 @@ For example we will add JUnit dependency code.
     <artifactId>junit</artifactId>
     <version>4.12</version>
 </dependency>
-
-
 ```
+
 ![add JUnit](./imgs/mv6.png)
 Now we can use JUnit in our project.
