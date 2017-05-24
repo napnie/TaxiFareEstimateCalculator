@@ -1,6 +1,6 @@
 # Taxi Fare Estimate Calculator Wiki
 
-**TFEC** is a maven project indirectly use Google Map Direction API and gson to deserialize JSON file from API request.
+**TFEC** is a maven project indirectly use Google Map Direction API and gson to deserialize JSON file from API request to calculate estimate fare of taxi for require route.
 
 ## Index
 
