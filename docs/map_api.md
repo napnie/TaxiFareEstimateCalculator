@@ -39,6 +39,7 @@ src="https://www.google.com/maps/embed/v1/view?zoom=6&center=15.8700,100.9925
 &key=YOUR_API_KEY" allowfullscreen></iframe>
 ```
 To show view of Thailand as (15.870,100.9925) is coordinate of Thailand.
+![View Mode](./imgs/gm1.png)
 
 ### Direction Mode
 ```
@@ -47,6 +48,7 @@ src="https://www.google.com/maps/embed/v1/directions?origin=Saraburi&destination
 &key=YOUR_API_KEY" allowfullscreen></iframe>
 ```
 To show direction with `Saraburi` as origin and `Bangkok` as destination
+![Direction Mode](./imgs/gm2.png)
 
 [Direction API]: https://developers.google.com/maps/documentation/directions/
 [Embed API]: https://developers.google.com/maps/documentation/embed/guide?hl=th
