@@ -28,7 +28,7 @@ From [*Apache Maven*](https://maven.apache.org/) :
 And we can add dependencies so that we can have other library.  
 For example we will add JUnit dependency code.
 
-```
+```xml
 <!-- https://mvnrepository.com/artifact/junit/junit -->
 <dependency>
     <groupId>junit</groupId>

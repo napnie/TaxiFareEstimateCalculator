@@ -33,7 +33,7 @@ As the name implies, It is a interactive google map. There is many Map modes to 
 Implements this code in HTML and open it to show interactive google map.
 
 ### View Mode
-```
+```html
 <iframe width="600" height="450" frameborder="0" style="border:0"
 src="https://www.google.com/maps/embed/v1/view?zoom=6&center=15.8700,100.9925
 &key=YOUR_API_KEY" allowfullscreen></iframe>
@@ -42,7 +42,7 @@ To show view of Thailand as (15.870,100.9925) is coordinate of Thailand.
 ![View Mode](./imgs/gm1.png)
 
 ### Direction Mode
-```
+```html
 <iframe width="600" height="450" frameborder="0" style="border:0"
 src="https://www.google.com/maps/embed/v1/directions?origin=Saraburi&destination=Bangkok
 &key=YOUR_API_KEY" allowfullscreen></iframe>

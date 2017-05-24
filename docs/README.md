@@ -9,4 +9,4 @@
 - [Google Map API](./map_api.md)
 
 ***
-Created by @napnie
+Created by Nitith Chayakul (@napnie)
