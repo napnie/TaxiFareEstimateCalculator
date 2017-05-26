@@ -1,5 +1,4 @@
-[Home](./README.md)  
-[**TFEC** Tech](./tech_stuff.md)
+[Home](./README.md)
 
 ***
 
