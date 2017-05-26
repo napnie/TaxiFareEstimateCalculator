@@ -116,6 +116,10 @@ public class InfoPanel extends PlainPanel {
 		String origin = getOrigin();
 		String destination = getDestination();
 		
+		estimator.setStartFare( Double.parseDouble( startFare.getText() ) );
+		estimator.setRunFare( Double.parseDouble( runFare.getText() ) );
+		estimator.setWaitFare( Double.parseDouble( waitFare.getText() ) );
+		
 		estimator.estimateRoute(origin, destination);
 		if( !estimator.isRouteEstimated() ) {
 			announce( estimator.getHint() );
