@@ -63,8 +63,8 @@ public class StepUI extends JPanel {
 				browser = new WebView();
 				webEngine = browser.getEngine();
 
-				if( route == null ) webEngine.loadContent( "<html><body bgcolor=\"#000000\">"
-						+ "<font size=\"5\" color=\"white\">"
+				if( route == null ) webEngine.loadContent( "<html><body bgcolor=\"#EEEEEE\">"
+						+ "<font size=\"5\" color=\"black\">"
 						+ "No Step</font></body><html>" );
 				else webEngine.loadContent( initStep() );
 				
@@ -96,9 +96,9 @@ public class StepUI extends JPanel {
 				+ ".point { font-size: 170%; }"
 				+ ".step { font-szie: 90%; }"
 				+ "</style></head>"
-				+ "<body bgcolor=\"#000000\">"
+				+ "<body bgcolor=\"#EEEEEE\">"
 				+ "<font class=\"point\" color=\"red\"> Origin: " + route.getOrigin() + "<br></font>"
-				+ "<font class=\"step\" color=\"white\">" );
+				+ "<font class=\"step\" color=\"black\">" );
 		stepPage.append("<ol>");
 		for(Step step : route) stepPage.append( "<li>" + step.getHTMLInstruction() + "</li>");
 		stepPage.append("</ol>");
