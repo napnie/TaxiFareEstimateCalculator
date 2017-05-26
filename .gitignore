@@ -9,3 +9,4 @@ sensitive_data.properties
 
 *NON.java
 *.html
+*.ucls

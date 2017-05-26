@@ -6,20 +6,25 @@
 - [Maven](./maven.md)
 - [Google Map API](./map_api.md)
 
-***
-
 ## Installation
 You can download latest releases [HERE](https://github.com/napnie/TaxiFareEstimateCalculator/releases)  
 
 Requirement:
 - [Java](https://www.java.com/en/download/)
 
-***
-
 ## Library
 - [Google Gson](https://github.com/google/gson)
 - [Commons IO](https://commons.apache.org/proper/commons-io/)
 - [Jsoup](https://jsoup.org/)
+
+## Design Pattern
+
+Design Pattern  | Description
+:-------------- | :------------------------------------------------------------------------------------------
+Factory Pattern | Used in MapData to create Route Object from JsonObject obtain from Google Map Direction API
+
+## UML
+![UML](./imgs/uml.png)
 
 ***
 Created by Nitith Chayakul (@napnie)

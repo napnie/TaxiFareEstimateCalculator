@@ -21,7 +21,7 @@ import com.napnie.tfec.ui.RouteMapGUI;
 @SuppressWarnings("serial")
 public class FareCalculatorUI extends JFrame {
 	/** Default font for this GUI. */
-	private Font font = new Font( Font.SANS_SERIF, Font.PLAIN, 16 );
+	private final Font font = new Font( Font.SANS_SERIF, Font.PLAIN, 16 );
 	
 	/**
 	 * Initialize FareCalculatorUI with FareCalculator.
