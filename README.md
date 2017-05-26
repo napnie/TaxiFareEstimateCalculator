@@ -10,7 +10,7 @@ When you give **TFEC** the route as well as a Fare rate **TFEC** will give you t
 ***
 
 ## Installation
-You can download [HERE](https://github.com/napnie/TaxiFareEstimateCalculator/blob/master/jar/TFEC_install.zip)  
+You can download latest releases [HERE](https://github.com/napnie/TaxiFareEstimateCalculator/releases)  
 
 Requirement:
 - [Java](https://www.java.com/en/download/)

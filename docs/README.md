@@ -9,8 +9,7 @@
 ***
 
 ## Installation
-
-You can download [HERE](https://github.com/napnie/TaxiFareEstimateCalculator/blob/master/jar/TFEC_install.zip)  
+You can download latest releases [HERE](https://github.com/napnie/TaxiFareEstimateCalculator/releases)  
 
 Requirement:
 - [Java](https://www.java.com/en/download/)
